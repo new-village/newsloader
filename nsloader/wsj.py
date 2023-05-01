@@ -16,7 +16,12 @@ class Article():
     def __init__(self, username=None, password=None):
         self.session = self._auth()
         self.soup = None
+        self.url = None
         self.title = None
+        self.news_outlet = "Wall Street Journal"
+        self.date_published = None
+        self.authors = None
+        self.summary = None
         self.body = None
             
     def _auth(self, username=None, password=None):
@@ -80,5 +85,11 @@ class Article():
     def load(self, url):
         _res = self.session.get(url)
         self.soup = BeautifulSoup(_res.content, 'html.parser')
-        self.title = self.soup.title.text
+        self.url = url
+        self.title = self.soup.select_one('h1[class*="StyledHeadline"]').text
+        self.date_published = self.soup.select_one('time[class*="Timestamp-Timestamp"]')['datetime']
+        self.authors = self.soup.select_one('span[class*="AuthorContainer"]').text
+        self.summary = self.soup.select_one('h2[class*="Dek-Dek"]').text
+        # self.body = '\n'.join(self.soup.select('p[class*="Paragraph"]'))
+
         return self
