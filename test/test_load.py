@@ -13,15 +13,14 @@ class TestResultNkLoader(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load normal result case includes suspension entry
-        cls.session = wsj.auth_session()
+        cls.article = wsj.Article()
 
-    def test_success_case_count(self):
-        """ testing success case counts
+    def test_success_case(self):
+        """ testing success case
         """
         url = 'https://www.wsj.com/articles/the-fed-absolves-itself-silicon-valley-bank-michael-barr-congress-federal-reserve-failure-2c675ba1'
-        res = self.session.get(url)
-        soup = BeautifulSoup(res.content, 'html.parser')
-        self.assertEqual(soup.title.text, "The Fed Failed but Wants More Power - WSJ")
+        self.article.load(url)
+        self.assertEqual(self.article.title, "The Fed Failed but Wants More Power - WSJ")
 
 
 if __name__ == "__main__":
