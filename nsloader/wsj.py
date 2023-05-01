@@ -1,14 +1,15 @@
 """ load.py
 """
 import os
+
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def auth_session(username=None, password=None):
@@ -23,7 +24,7 @@ def auth_session(username=None, password=None):
 
     # passing session info to requests object
     session = requests.session()
-    for cookie in login(usr, pwd):
+    for cookie in _login(usr, pwd):
         session.cookies.set(cookie["name"], cookie["value"])
 
     # Add header info
@@ -32,7 +33,7 @@ def auth_session(username=None, password=None):
 
     return session
 
-def login(username, password) -> list:
+def _login(username, password) -> list:
     """ Get authenticated session info of the Wall Street Journal.
     :param username: registrated user name or email address
     :param password: registrated password
@@ -68,6 +69,3 @@ def login(username, password) -> list:
         driver.close()
         driver.quit()
     return cookie
-
-        # for cookie in driver.get_cookies():
-        #     session.cookies.set(cookie["name"], cookie["value"])
