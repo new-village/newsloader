@@ -5,6 +5,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: selenium/standalone-firefox:latest
 
     strategy:
       matrix:
@@ -27,14 +29,6 @@ jobs:
         run: |
           echo "WSJ_USERNAME=$WSJ_USERNAME" >> .env
           echo "WSJ_PASSWORD=$WSJ_PASSWORD" >> .env
-
-      - name: Install Firefox and geckodriver
-        run: |
-          echo "geckodriver/firefox"
-          which geckodriver
-          geckodriver --version
-          which firefox
-          firefox --version
 
       - name: Test with unittest
         env:
