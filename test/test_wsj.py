@@ -66,10 +66,6 @@ class TestWsjNsLoader(unittest.TestCase):
             result[key] = len(result[key])
         self.assertDictEqual(result, expect)
 
-    @classmethod
-    def tearDownClass(cls):
-        del cls.article
-
 
 if __name__ == "__main__":
     unittest.main()

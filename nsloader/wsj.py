@@ -1,6 +1,7 @@
 """ load.py
 """
 import os
+import logging
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -13,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Article():
     def __init__(self, username=None, password=None):
+        logging.info('Initialize the Article class')
         self.driver = self._login(username, password)
         self.soup = None
         self.url = None
@@ -37,6 +39,7 @@ class Article():
         # Set Parameters
         usr = os.environ['WSJ_USERNAME'] if os.environ['WSJ_USERNAME'] else username
         pwd = os.environ['WSJ_PASSWORD'] if os.environ['WSJ_PASSWORD'] else password
+        logging.info(f'Login the site by %s' % usr)
         url = "https://www.wsj.com/"
         # Initialize browser
         options = Options()
@@ -49,7 +52,7 @@ class Article():
 
         try:
             # Go to Sign-in page
-            driver.find_element(By.LINK_TEXT, "Sign In").click()
+            wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Sign In"))).click()
             # Login Site
             page1 = [usr, '//*[@id="username"]', '//*[@id="basic-login"]/div[1]/form/div[2]/div[6]/div[1]/button[2]']
             page2 = [pwd, '//*[@id="password-login-password"]', '//*[@id="password-login"]/div/form/div/div[5]/div[1]/button']
@@ -57,6 +60,7 @@ class Article():
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[1]))).send_keys(i[0])
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[2]))).click()
             wait.until(EC.title_contains("The Wall Street Journal"))
+            logging.info('== Success login ==')
             #driver.save_screenshot('screenshot.png')
         except TimeoutException:
             print("Timeout: Username or Password input failed. Check your credentials.")
@@ -65,6 +69,7 @@ class Article():
 
     def load(self, url):
         # Get HTML and convert soup object
+        logging.info(f'Start to collect %s' % url)
         self.driver.get(url)
         self.soup = BeautifulSoup(self.driver.page_source.encode('utf-8'), 'html.parser')
 

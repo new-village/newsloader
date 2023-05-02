@@ -5,6 +5,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: selenium/standalone-firefox:latest
 
     strategy:
       matrix:
