@@ -17,7 +17,7 @@ nsloader is tested by Python `3.10.4`.
   
 ### Usage
 ----------------------
-To load the [Wall Street Journal](https://www.wsj.com/) articles ~~and parse to dictionay file~~.
+To load the [Wall Street Journal](https://www.wsj.com/) articles and parse to dictionay file.
 
 #### Wall Street Journal  
 NOTE: You have to set 2 enviroment valiables name as `WSJ_USERNAME` and `WSJ_PASSWORD` before execution.
