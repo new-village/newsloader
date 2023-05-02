@@ -2,7 +2,6 @@
 """
 import os
 
-import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -14,43 +13,30 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Article():
     def __init__(self, username=None, password=None):
-        self.session = self._auth()
+        self.driver = self._login(username, password)
         self.soup = None
         self.url = None
         self.title = None
+        self.sub_title = None
         self.news_outlet = "Wall Street Journal"
         self.date_published = None
         self.authors = None
-        self.summary = None
+        self.profile = None
         self.body = None
-            
-    def _auth(self, username=None, password=None):
-        """ Create authenticated session of the Wall Street Journal by the Requests object.
+
+    def __del__(self):
+        self.driver.close()
+        self.driver.quit()
+
+    def _login(self, username=None, password=None):
+        """ Get authenticated session info of the Wall Street Journal.
         :param username: registrated user name or email address
         :param password: registrated password
-        :return: :class:`requests.sessions.Session` object
+        :return: :class: `driver` object
         """
         # Set Parameters
         usr = os.environ['WSJ_USERNAME'] if os.environ['WSJ_USERNAME'] else username
         pwd = os.environ['WSJ_PASSWORD'] if os.environ['WSJ_PASSWORD'] else password
-
-        # passing session info to requests object
-        session = requests.session()
-        for cookie in self._login(usr, pwd):
-            session.cookies.set(cookie["name"], cookie["value"])
-
-        # Add header info
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-        session.headers.update(headers)
-
-        return session
-
-    def _login(self, username, password) -> list:
-        """ Get authenticated session info of the Wall Street Journal.
-        :param username: registrated user name or email address
-        :param password: registrated password
-        :return: List object
-        """
         url = "https://www.wsj.com/"
         # Initialize browser
         options = Options()
@@ -65,31 +51,55 @@ class Article():
             # Go to Sign-in page
             driver.find_element(By.LINK_TEXT, "Sign In").click()
             # Login Site
-            page1 = [username, '//*[@id="username"]', '//*[@id="basic-login"]/div[1]/form/div[2]/div[6]/div[1]/button[2]']
-            page2 = [password, '//*[@id="password-login-password"]', '//*[@id="password-login"]/div/form/div/div[5]/div[1]/button']
+            page1 = [usr, '//*[@id="username"]', '//*[@id="basic-login"]/div[1]/form/div[2]/div[6]/div[1]/button[2]']
+            page2 = [pwd, '//*[@id="password-login-password"]', '//*[@id="password-login"]/div/form/div/div[5]/div[1]/button']
             for i in [page1, page2]:
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[1]))).send_keys(i[0])
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[2]))).click()
             wait.until(EC.title_contains("The Wall Street Journal"))
-            # Get cookie
-            cookie = driver.get_cookies()
             #driver.save_screenshot('screenshot.png')
         except TimeoutException:
             print("Timeout: Username or Password input failed. Check your credentials.")
-        finally:
-            # Close firefox
-            driver.close()
-            driver.quit()
-        return cookie
+
+        return driver
 
     def load(self, url):
-        _res = self.session.get(url)
-        self.soup = BeautifulSoup(_res.content, 'html.parser')
+        # Get HTML and convert soup object
+        self.driver.get(url)
+        self.soup = BeautifulSoup(self.driver.page_source.encode('utf-8'), 'html.parser')
+
+        # Extract each properties
         self.url = url
-        self.title = self.soup.select_one('h1[class*="StyledHeadline"]').text
-        self.date_published = self.soup.select_one('time[class*="Timestamp-Timestamp"]')['datetime']
-        self.authors = self.soup.select_one('span[class*="AuthorContainer"]').text
-        self.summary = self.soup.select_one('h2[class*="Dek-Dek"]').text
-        # self.body = '\n'.join(self.soup.select('p[class*="Paragraph"]'))
+        self.title = self._extract('h1[class*="StyledHeadline"]')
+        self.sub_title = self._extract('h2[class*="Dek-Dek"]')
+        self.date_published = self._extract('time[class*="Timestamp-Timestamp"]',"datetime")
+        self.authors = self._extract('span[class*="AuthorContainer"]')
+        self.profile = self._extract('p[data-type="paragraph"] > em[data-type="emphasis"]')
+        # Extract body
+        body = [i.text for i in self.soup.select('p[data-type="paragraph"]')]
+        # if there is a profile, delete profile from the document
+        if len(self.profile) > 0:
+            body.remove(self.profile)
+        self.body = '\n'.join(body)
 
         return self
+
+    def _extract(self, selector, extract_attribute=None) -> list:
+        target = self.soup.select(selector)
+        if extract_attribute is None:
+            contents = ", ".join([i.text for i in target] if len(target) > 0 else list())
+        else:
+            contents = ", ".join([i[extract_attribute] for i in target] if len(target) > 0 else list())
+        return contents
+
+    def to_dict(self) -> dict:
+        return {
+            'url': self.url,
+            'title': self.title,
+            'sub_title': self.sub_title,
+            'news_outlet': self.news_outlet,
+            'date_published': self.date_published,
+            'authors': self.authors,
+            'profile': self.profile,
+            'body': self.body
+        }

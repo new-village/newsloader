@@ -12,7 +12,6 @@ nsloader is tested by Python `3.10.4`.
   
 ### Dependencies
 ----------------------
-- [requests](https://docs.python-requests.org/en/latest/)
 - [bs4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#)
 - [selenium](https://www.selenium.dev/)
   
@@ -20,11 +19,13 @@ nsloader is tested by Python `3.10.4`.
 ----------------------
 To load the [Wall Street Journal](https://www.wsj.com/) articles ~~and parse to dictionay file~~.
 
-#### Wall Street Journal
+#### Wall Street Journal  
+NOTE: You have to set 2 enviroment valiables name as `WSJ_USERNAME` and `WSJ_PASSWORD` before execution.
+
 ```python
 >>> from nsloader import wsj
->>> session = wsj.auth_session()
->>> response = session.get('https://www.wsj.com/articles/the-fed-...')
->>> print(BeautifulSoup(response.content, 'html.parser').title.text)
-"The Fed Failed but Wants More Power - WSJ"
+>>> article = wsj.Article()
+>>> article.load('https://www.wsj.com/articles/...')
+>>> print(article.to_dict())
+{"url": "https://www.wsj.com/articles/...", "title": "The Fed ...", "sub_title": "As expected ...",  ... }
 ```
