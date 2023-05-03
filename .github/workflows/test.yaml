@@ -30,8 +30,10 @@ jobs:
           pip install selenium webdriver_manager chromedriver-binary beautifulsoup4
 
       - name: Test with unittest
+        run: |
+          echo "WSJ_USERNAME : $WSJ_USERNAME"
+          echo "WSJ_PASSWORD : $WSJ_PASSWORD"
+          python -m unittest
         env:
           WSJ_USERNAME: ${{ vars.WSJ_USERNAME }}
           WSJ_PASSWORD: ${{ secrets.WSJ_PASSWORD }}
-        run: |
-          python -m unittest
