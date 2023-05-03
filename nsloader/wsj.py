@@ -52,19 +52,18 @@ class Article():
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
         # Access to initial page
         driver.get(url)
-        wait = WebDriverWait(driver=driver, timeout=20)
+        wait = WebDriverWait(driver=driver, timeout=10)
         try:
             # Go to Sign-in page
-            wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Sign In"))).click()
+            wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "SIGN IN"))).click()
             # Login Site
             page1 = [usr, '//*[@id="username"]', '//*[@id="basic-login"]/div[1]/form/div[2]/div[6]/div[1]/button[2]']
             page2 = [pwd, '//*[@id="password-login-password"]', '//*[@id="password-login"]/div/form/div/div[5]/div[1]/button']
             for i in [page1, page2]:
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[1]))).send_keys(i[0])
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[2]))).click()
-                logging.warning(f"%s is %s" % driver.title, pwd)
             wait.until(EC.title_contains("The Wall Street Journal"))
-            # driver.save_screenshot('screenshot2.png')
+            # driver.save_screenshot('screenshot.png')
         except TimeoutException:
             logging.warning("Timeout: Username or Password input failed. Check your credentials.")
 
