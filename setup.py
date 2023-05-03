@@ -13,7 +13,7 @@ setup(
     description='This script collects articles from Wall Street Journal and returns it in dict format.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=['beautifulsoup4', 'selenium'],
+    install_requires=['beautifulsoup4', 'selenium', 'webdriver_manager', 'chromedriver_binary'],
     packages=find_packages(),
     package_data={'': ['config/*.json']},
 )
