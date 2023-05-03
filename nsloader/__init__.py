@@ -1,4 +1,4 @@
 """
 News Site Data Loader
 """
-from nsloader import wsj, test
+from nsloader import wsj
