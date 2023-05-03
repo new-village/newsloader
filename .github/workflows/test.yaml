@@ -31,7 +31,7 @@ jobs:
 
       - name: Test with unittest
         env:
-          WSJ_USERNAME: ${{ secrets.WSJ_USERNAME }}
+          WSJ_USERNAME: ${{ vars.WSJ_USERNAME }}
           WSJ_PASSWORD: ${{ secrets.WSJ_PASSWORD }}
         run: |
           python -m unittest
