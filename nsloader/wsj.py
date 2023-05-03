@@ -1,15 +1,18 @@
 """ load.py
 """
-import os
 import logging
+import os
 
+import chromedriver_binary
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class Article():
@@ -44,15 +47,17 @@ class Article():
         # Initialize browser
         options = Options()
         options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument("--disable-dev-shm-usage")
         # Create Firefox's webdriver object
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
         # Access to initial page
         driver.get(url)
         wait = WebDriverWait(driver=driver, timeout=10)
-
         try:
             # Go to Sign-in page
             wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Sign In"))).click()
+            driver.save_screenshot('screenshot.png')
             # Login Site
             page1 = [usr, '//*[@id="username"]', '//*[@id="basic-login"]/div[1]/form/div[2]/div[6]/div[1]/button[2]']
             page2 = [pwd, '//*[@id="password-login-password"]', '//*[@id="password-login"]/div/form/div/div[5]/div[1]/button']
@@ -61,9 +66,9 @@ class Article():
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[2]))).click()
             wait.until(EC.title_contains("The Wall Street Journal"))
             logging.info('== Success login ==')
-            #driver.save_screenshot('screenshot.png')
+            driver.save_screenshot('screenshot2.png')
         except TimeoutException:
-            print("Timeout: Username or Password input failed. Check your credentials.")
+            logging.warning("Timeout: Username or Password input failed. Check your credentials.")
 
         return driver
 
