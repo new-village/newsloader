@@ -41,10 +41,7 @@ class Article():
         """
         # Set Parameters
         usr = os.environ['WSJ_USERNAME'] if os.environ['WSJ_USERNAME'] else username
-        logging.warning(f"User Name is %s" % usr)
         pwd = os.environ['WSJ_PASSWORD'] if os.environ['WSJ_PASSWORD'] else password
-        logging.warning(f"Password is %s" % pwd)
-        logging.info(f'Login the site by %s' % usr)
         url = "https://www.wsj.com/"
         # Initialize browser
         options = Options()
@@ -55,7 +52,7 @@ class Article():
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
         # Access to initial page
         driver.get(url)
-        wait = WebDriverWait(driver=driver, timeout=10)
+        wait = WebDriverWait(driver=driver, timeout=20)
         try:
             # Go to Sign-in page
             wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Sign In"))).click()
@@ -65,8 +62,8 @@ class Article():
             for i in [page1, page2]:
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[1]))).send_keys(i[0])
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[2]))).click()
+                logging.warning(f"%s is %s" % driver.title, pwd)
             wait.until(EC.title_contains("The Wall Street Journal"))
-            logging.info('== Success login ==')
             # driver.save_screenshot('screenshot2.png')
         except TimeoutException:
             logging.warning("Timeout: Username or Password input failed. Check your credentials.")
