@@ -41,7 +41,9 @@ class Article():
         """
         # Set Parameters
         usr = os.environ['WSJ_USERNAME'] if os.environ['WSJ_USERNAME'] else username
+        logging.warning(f"User Name is %s" % usr)
         pwd = os.environ['WSJ_PASSWORD'] if os.environ['WSJ_PASSWORD'] else password
+        logging.warning(f"Password is %s" % pwd)
         logging.info(f'Login the site by %s' % usr)
         url = "https://www.wsj.com/"
         # Initialize browser
@@ -57,7 +59,6 @@ class Article():
         try:
             # Go to Sign-in page
             wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Sign In"))).click()
-            driver.save_screenshot('screenshot.png')
             # Login Site
             page1 = [usr, '//*[@id="username"]', '//*[@id="basic-login"]/div[1]/form/div[2]/div[6]/div[1]/button[2]']
             page2 = [pwd, '//*[@id="password-login-password"]', '//*[@id="password-login"]/div/form/div/div[5]/div[1]/button']
@@ -66,7 +67,7 @@ class Article():
                 wait.until(EC.element_to_be_clickable((By.XPATH, i[2]))).click()
             wait.until(EC.title_contains("The Wall Street Journal"))
             logging.info('== Success login ==')
-            driver.save_screenshot('screenshot2.png')
+            # driver.save_screenshot('screenshot2.png')
         except TimeoutException:
             logging.warning("Timeout: Username or Password input failed. Check your credentials.")
 
