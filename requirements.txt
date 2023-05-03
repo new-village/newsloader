@@ -1,2 +1,4 @@
 selenium
 beautifulsoup4
+webdriver_manager
+chromedriver_binary
