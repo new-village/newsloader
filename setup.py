@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='nsloader',
-    version='1.0.0',
+    version='0.9.0',
     author='new-village',
     url='https://github.com/new-village/nsloader',
     description='This script collects articles from Wall Street Journal and returns it in dict format.',
