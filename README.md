@@ -1,5 +1,5 @@
 # nsloader  
-[![Test](https://github.com/new-village/nsloader/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/new-village/nsloader/actions/workflows/unittest.yaml)[![PyPI](https://badge.fury.io/py/nsloader.svg)](https://badge.fury.io/py/nsloader)  
+[![Test](https://github.com/new-village/nsloader/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/new-village/nsloader/actions/workflows/unittest.yaml) [![PyPI version](https://badge.fury.io/py/nsloader.svg)](https://badge.fury.io/py/nsloader)  
 This script collects articles from [Wall Street Journal](https://www.wsj.com/) and returns it in dict format.  
   
 ### Installing nsloader and Supported Versions
