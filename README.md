@@ -13,12 +13,9 @@ nsloader is tested by Python `3.10`.
   
 ### Dependencies
 ----------------------
-- [beautifulsoup4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#)
-- [selenium](https://www.selenium.dev/)
-- [webdriver_manager](https://github.com/SergeyPirogov/webdriver_manager)
-- [chromedriver_binary](https://github.com/danielkaiser/python-chromedriver-binary)
+- [playwright](https://playwright.dev/python/)
   
-Additionaly, you have to install `google-chrome-stable` in your execution environment.  
+Additionaly, you have to execute `install playwright` in your execution environment.  
   
   
 ### Usage

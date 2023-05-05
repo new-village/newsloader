@@ -40,7 +40,6 @@ class TestWsjNsLoader(unittest.TestCase):
             result[key] = len(result[key])
         self.assertDictEqual(result, expect)
 
-
     def test_commentary(self):
         """ testing commentary case
         """
@@ -65,7 +64,6 @@ class TestWsjNsLoader(unittest.TestCase):
         for key in ["profile", "body"]:
             result[key] = len(result[key])
         self.assertDictEqual(result, expect)
-
 
 if __name__ == "__main__":
     unittest.main()
